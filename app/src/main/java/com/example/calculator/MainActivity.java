@@ -289,11 +289,11 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < arrInp.length; i++) {
             if (((arrInp[arrInp.length - i - 1] == '/' || arrInp[arrInp.length - i - 1] == '*' || arrInp[arrInp.length - i - 1] == '-' || arrInp[arrInp.length - i - 1] == '+'
                     || arrInp[arrInp.length - i - 1] == ')' || arrInp[arrInp.length - i - 1] == '(') && !flagPoint) || i == arrInp.length - 1){
-                inp.append(',');
+                inp.append('.');
                 etInp.setText(inp);
                 return;
             }
-            if (arrInp[arrInp.length - i - 1] == ',') {
+            if (arrInp[arrInp.length - i - 1] == '.') {
                 flagPoint = true;
                 return;
             }

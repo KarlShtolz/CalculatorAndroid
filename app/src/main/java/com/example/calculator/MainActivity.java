@@ -389,9 +389,12 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         MathPars p = new MathPars();
-        String strAns = String.valueOf(p.Parse(str));
-        //TODO
-        etOut.setText(strAns);
+        try {
+            String strAns = String.valueOf(p.Parse(str));
+            etOut.setText(strAns);
+        } catch (Exception e) {
+            etOut.setText(LVL_ERROR);
+        }
     }
 
     public void onClickMinus(View view) {

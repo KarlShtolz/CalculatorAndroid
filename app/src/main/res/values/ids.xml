@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="b_multiply" type="id" />
+    <item name="b_point" type="id" />
+    <item name="b_0" type="id" />
+    <item name="b_backspace" type="id" />
+    <item name="b_equal" type="id" />
+    <item name="b_5" type="id" />
+    <item name="b_1" type="id" />
+    <item name="b_2" type="id" />
+    <item name="b_3" type="id" />
+    <item name="b_plus" type="id" />
+    <item name="b_4" type="id" />
+    <item name="b_6" type="id" />
+    <item name="b_minus" type="id" />
+    <item name="b_7" type="id" />
+    <item name="b_8" type="id" />
+    <item name="b_9" type="id" />
+    <item name="b_open_bracket" type="id" />
+    <item name="b_close_bracket" type="id" />
+    <item name="b_division" type="id" />
+    <item name="b_c" type="id" />
+    <item name="et_out" type="id" />
+    <item name="et_inp" type="id" />
+</resources>

@@ -1,5 +1,7 @@
 package com.example.calculator;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Display;
@@ -9,10 +11,15 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
+    private Button bSinus;
+    private Button bMemory;
+    private Button bCosinus;
+    private Button bTangens;
     private EditText etInp;
     private EditText etOut;
     private Button bPlus;
@@ -38,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
     public int screenWidth;
     public int screenHeight;
     private static final int BUTTON_COLUMNS = 4;
-    private static final int BUTTON_ROWS = 5;
-    private static final int ALL_ROWS = 7;
+    private static final int BUTTON_ROWS = 6;//5
+    private static final int ALL_ROWS = 8;//7
     private static int buttonWidth;
     private static int buttonHeight;
     private static int etHeight;
@@ -48,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String LVL_INFO  = "<<INFO_>>";
     private static final String LVL_OK    = "<<OK___>>";
     private static final String LVL_DEBUG = "<<DEBUG>>";
+    private char [] numbers = {'0','1','2','3','4','5','6','7','8','9'};
+    private char [] sign = {'/','*','-','+','(',')',','};
+    private char [] signWithNoOpenBracket = {'/','*','-','+',')',','};
+    private long backPressedTime;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +66,18 @@ public class MainActivity extends AppCompatActivity {
         this.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         initViewParams();
+    }
+    @Override
+    public void onBackPressed() {
+
+        if(backPressedTime + 2000> System.currentTimeMillis()){
+            super.onBackPressed();
+            return;
+        }else{
+            Toast.makeText(this, "Нажмите еще раз, чтобы выйти", Toast.LENGTH_SHORT).show();
+        }
+        backPressedTime = System.currentTimeMillis();
+
     }
     public void initViewParams () {
         etInp = findViewById(R.id.et_inp);
@@ -67,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         bCloseBracket = findViewById(R.id.b_close_bracket);
         bPoint = findViewById(R.id.b_point);
         bClear = findViewById(R.id.b_c);
+        bSinus = findViewById(R.id.b_sin);//
+        bCosinus = findViewById(R.id.b_cos);
+        bTangens = findViewById(R.id.b_tan);
+        bMemory = findViewById(R.id.b_memory);//
         b0 = findViewById(R.id.b_0);
         b1 = findViewById(R.id.b_1);
         b2 = findViewById(R.id.b_2);
@@ -95,6 +122,12 @@ public class MainActivity extends AppCompatActivity {
         b1.setLayoutParams(lpButt);
         b2.setLayoutParams(lpButt);
         b3.setLayoutParams(lpButt);
+
+        bSinus.setLayoutParams(lpButt);
+        bCosinus.setLayoutParams(lpButt);
+        bTangens.setLayoutParams(lpButt);
+        bMemory.setLayoutParams(lpButt);
+
         b4.setLayoutParams(lpButt);
         b5.setLayoutParams(lpButt);
         b6.setLayoutParams(lpButt);
@@ -378,23 +411,50 @@ public class MainActivity extends AppCompatActivity {
         }
         char [] arr = inp.toString().toCharArray();
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < arr.length - 1; i++) {
-            stringBuilder.append(arr[i]);
+        if (isContainCharInArr(numbers, arr[arr.length - 1]) || isContainCharInArr(signWithNoOpenBracket, arr[arr.length - 1])) {
+            //и последний символ - цифра или знак
+            for (int i = 0; i < arr.length - 1; i++) {
+                stringBuilder.append(arr[i]);
+            }
+        } else {
+            StringBuilder tmp = new StringBuilder();
+            //если последний символ sin(, cos(, tan(
+            for (int i = arr.length - 4; i < arr.length; i++) {
+                tmp.append(arr[i]);
+            }
+            if (tmp.toString().equals("sin(") || tmp.toString().equals("cos(") || tmp.toString().equals("tan(")) {
+                for (int i = 0; i < arr.length - 4; i++) {
+                    stringBuilder.append(arr[i]);
+                }
+            } else {
+                for (int i = 0; i < arr.length - 1; i++) {
+                    stringBuilder.append(arr[i]);
+                }
+            }
         }
         etInp.setText(stringBuilder);
     }
     public void onClickEqual(View view) throws Exception {
-        String str = etInp.getText().toString();
-        if (str.isEmpty()) {
+        String strInp = etInp.getText().toString();
+        if (strInp.isEmpty()) {
             return;
         }
         MathPars p = new MathPars();
         try {
-            String strAns = String.valueOf(p.Parse(str));
+            String strAns = String.valueOf(p.Parse(strInp));
             etOut.setText(strAns);
         } catch (Exception e) {
             etOut.setText(LVL_ERROR);
         }
+        String strOut = etOut.getText().toString();
+        StringBuilder memoryStr = new StringBuilder();
+        SharedPreferences memory = getSharedPreferences(MemoryActivity.LAST_OPERATION, MODE_PRIVATE);
+        String tvmem = memory.getString(MemoryActivity.OPERATION, "");
+        memoryStr.append(tvmem).append("\n").append(strInp).append("=").append(strOut);
+        SharedPreferences.Editor editor = memory.edit();
+        editor.putString(MemoryActivity.OPERATION, memoryStr.toString());
+        editor.apply();
+        editor.commit();
     }
 
     public void onClickMinus(View view) {
@@ -411,5 +471,73 @@ public class MainActivity extends AppCompatActivity {
             inp.append('-');
             etInp.setText(inp);
         }
+    }
+
+    public void onClickSinus(View view) {
+        StringBuilder inp = new StringBuilder(etInp.getText().toString());
+        char [] arr = etInp.getText().toString().toCharArray();
+        if (inp.length() == 0) {
+            inp.append("sin(");
+            etInp.setText(inp);
+            return;
+        }
+        if (inp.length() != 0) {
+            if (isContainCharInArr(numbers, arr[arr.length - 1]) || arr[arr.length - 1] == sign[5]) {
+                return;
+            } else {
+                inp.append("sin(");
+                etInp.setText(inp);
+                return;
+            }
+        }
+    }
+    public void onClickCosinus(View view) {
+        StringBuilder inp = new StringBuilder(etInp.getText().toString());
+        char [] arr = etInp.getText().toString().toCharArray();
+        if (inp.length() == 0) {
+            inp.append("cos(");
+            etInp.setText(inp);
+            return;
+        }
+        if (inp.length() != 0) {
+            if (isContainCharInArr(numbers, arr[arr.length - 1]) || arr[arr.length - 1] == sign[5]) {
+                return;
+            } else {
+                inp.append("cos(");
+                etInp.setText(inp);
+                return;
+            }
+        }
+    }
+    public void onClickTangens(View view) {
+        StringBuilder inp = new StringBuilder(etInp.getText().toString());
+        char [] arr = etInp.getText().toString().toCharArray();
+        if (inp.length() == 0) {
+            inp.append("tan(");
+            etInp.setText(inp);
+            return;
+        }
+        if (inp.length() != 0) {
+            if (isContainCharInArr(numbers, arr[arr.length - 1]) || arr[arr.length - 1] == sign[5]) {
+                return;
+            } else {
+                inp.append("tan(");
+                etInp.setText(inp);
+                return;
+            }
+        }
+    }
+    public void onClickMemory(View view) {
+        //StringBuilder inp = new StringBuilder(etInp.getText().toString());
+        Intent toMemory = new Intent(this, MemoryActivity.class);
+        startActivity(toMemory);
+    }
+    public boolean isContainCharInArr(char [] arr, char a) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == a) {
+                return true;
+            }
+        }
+        return false;
     }
 }

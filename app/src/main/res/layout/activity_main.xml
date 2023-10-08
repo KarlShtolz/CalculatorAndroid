@@ -72,6 +72,72 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/b_sin"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#48A7F3"
+                            android:insetLeft="2dp"
+                            android:insetTop="2dp"
+                            android:insetRight="2dp"
+                            android:insetBottom="2dp"
+                            android:onClick="onClickSinus"
+                            android:text="sin"
+                            android:textSize="14sp"
+                            app:cornerRadius="12dp" />
+
+                        <Button
+                            android:id="@+id/b_cos"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#48A7F3"
+                            android:insetLeft="2dp"
+                            android:insetTop="2dp"
+                            android:insetRight="2dp"
+                            android:insetBottom="2dp"
+                            android:onClick="onClickCosinus"
+                            android:text="cos"
+                            android:textSize="14sp"
+                            app:cornerRadius="12dp" />
+
+                        <Button
+                            android:id="@+id/b_tan"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#48A7F3"
+                            android:insetLeft="2dp"
+                            android:insetTop="2dp"
+                            android:insetRight="2dp"
+                            android:insetBottom="2dp"
+                            android:onClick="onClickTangens"
+                            android:text="tan"
+                            android:textSize="14sp"
+                            app:cornerRadius="12dp" />
+
+                        <Button
+                            android:id="@+id/b_memory"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_weight="1"
+                            android:backgroundTint="#48A7F3"
+                            android:insetLeft="2dp"
+                            android:insetTop="2dp"
+                            android:insetRight="2dp"
+                            android:insetBottom="2dp"
+                            android:onClick="onClickMemory"
+                            android:text="M"
+                            android:textSize="14sp"
+                            app:cornerRadius="12dp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
